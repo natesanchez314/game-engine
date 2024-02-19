@@ -135,6 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="first_app.cpp" />
+    <ClCompile Include="first_app.hpp" />
+    <ClCompile Include="nate_window.cpp" />
+    <ClCompile Include="nate_window.hpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
