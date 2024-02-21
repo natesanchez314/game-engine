@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nate_window.hpp"
+#include "nate_pipeline.hpp"
 
 namespace nate
 {
@@ -12,6 +13,7 @@ namespace nate
 
 	private:
 		NateWindow nateWindow{WIDTH, HEIGHT, "Vulkan is hard"};
+		NatePipeline natePipeline{"simple_shader.vert.spv", "simple_shader.frag.spv"};
 
 	public:
 		void run();

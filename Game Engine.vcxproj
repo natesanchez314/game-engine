@@ -137,9 +137,18 @@
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
     <ClCompile Include="first_app.hpp" />
+    <ClCompile Include="nate_pipeline.cpp" />
     <ClCompile Include="nate_window.cpp" />
     <ClCompile Include="nate_window.hpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compile.bat" />
+    <None Include="simple_shader.frag" />
+    <None Include="simple_shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="nate_pipeline.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
