@@ -26,5 +26,7 @@ namespace nate
 		NateWindow& operator=(const NateWindow&) = delete;
 
 		bool shouldClose() { return glfwWindowShouldClose(this->window); }
+
+		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 	};
 }

@@ -2,6 +2,7 @@
 
 #include "nate_window.hpp"
 #include "nate_pipeline.hpp"
+#include "nate_device.hpp"
 
 namespace nate
 {
@@ -13,7 +14,8 @@ namespace nate
 
 	private:
 		NateWindow nateWindow{WIDTH, HEIGHT, "Vulkan is hard"};
-		NatePipeline natePipeline{"simple_shader.vert.spv", "simple_shader.frag.spv"};
+		NateDevice nateDevice{nateWindow};
+		NatePipeline natePipeline{nateDevice, "simple_shader.vert.spv", "simple_shader.frag.spv", NatePipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
 
 	public:
 		void run();

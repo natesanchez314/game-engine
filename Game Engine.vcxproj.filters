@@ -32,6 +32,9 @@
     <ClCompile Include="nate_pipeline.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_device.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -43,6 +46,11 @@
     <None Include="compile.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="nate_pipeline.hpp" />
+    <ClInclude Include="nate_device.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="nate_pipeline.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
