@@ -35,6 +35,7 @@ namespace nate
 		NatePipeline(const NatePipeline&) = delete;
 		void operator=(const NatePipeline&) = delete;
 
+		void bind(VkCommandBuffer commandBuffer);
 		static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
 
 	private:
