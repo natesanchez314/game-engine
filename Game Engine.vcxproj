@@ -139,6 +139,7 @@
     <ClCompile Include="first_app.hpp" />
     <ClCompile Include="nate_device.cpp" />
     <ClCompile Include="nate_pipeline.cpp" />
+    <ClCompile Include="nate_swap_chain.cpp" />
     <ClCompile Include="nate_window.cpp" />
     <ClCompile Include="nate_window.hpp" />
     <ClCompile Include="main.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="nate_device.hpp" />
     <ClInclude Include="nate_pipeline.hpp" />
+    <ClInclude Include="nate_swap_chain.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
