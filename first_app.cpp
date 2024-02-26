@@ -7,6 +7,7 @@ namespace nate
 {
 	FirstApp::FirstApp()
 	{
+		loadModels();
 		createPipelineLayout();
 		createPipeline();
 		createCommandBuffers();
@@ -26,6 +27,17 @@ namespace nate
 		}
 
 		vkDeviceWaitIdle(nateDevice.device());
+	}
+
+	void FirstApp::loadModels()
+	{
+		std::vector<NateModel::Vertex> vertices{
+			{{0.0f, -0.5f}},
+			{{0.5f, 0.5f}},
+			{{-0.5f, 0.5f}}
+		};
+
+		nateModel = std::make_unique<NateModel>(nateDevice, vertices);
 	}
 
 	void FirstApp::createPipelineLayout()
@@ -97,7 +109,8 @@ namespace nate
 			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			natePipeline->bind(commandBuffers[i]);
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			nateModel->bind(commandBuffers[i]);
+			nateModel->draw(commandBuffers[i]);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)

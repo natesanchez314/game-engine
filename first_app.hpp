@@ -4,6 +4,7 @@
 #include "nate_pipeline.hpp"
 #include "nate_device.hpp"
 #include "nate_swap_chain.hpp"
+#include "nate_model.hpp"
 
 #include <memory>
 #include <vector>
@@ -23,6 +24,7 @@ namespace nate
 		std::unique_ptr<NatePipeline> natePipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+		std::unique_ptr<NateModel> nateModel;
 
 	public:
 		FirstApp();
@@ -34,6 +36,7 @@ namespace nate
 		void run();
 
 	private:
+		void loadModels();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
