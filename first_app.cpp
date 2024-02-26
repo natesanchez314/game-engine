@@ -32,9 +32,9 @@ namespace nate
 	void FirstApp::loadModels()
 	{
 		std::vector<NateModel::Vertex> vertices{
-			{{0.0f, -0.5f}},
-			{{0.5f, 0.5f}},
-			{{-0.5f, 0.5f}}
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 		};
 
 		nateModel = std::make_unique<NateModel>(nateDevice, vertices);

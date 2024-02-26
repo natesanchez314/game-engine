@@ -49,7 +49,7 @@
     <None Include="simple_shader.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="compile.bat" />
+    <None Include="compile_shaders.bat" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nate_device.hpp">
