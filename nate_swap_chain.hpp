@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -13,14 +14,40 @@ namespace nate
 {
     class NateSwapChain 
     {
+    private:
+        VkFormat swapChainImageFormat;
+        VkExtent2D swapChainExtent;
+
+        std::vector<VkFramebuffer> swapChainFramebuffers;
+        VkRenderPass renderPass;
+
+        std::vector<VkImage> depthImages;
+        std::vector<VkDeviceMemory> depthImageMemorys;
+        std::vector<VkImageView> depthImageViews;
+        std::vector<VkImage> swapChainImages;
+        std::vector<VkImageView> swapChainImageViews;
+
+        NateDevice& device;
+        VkExtent2D windowExtent;
+
+        VkSwapchainKHR swapChain;
+        std::shared_ptr<NateSwapChain> oldSwapChain;
+
+        std::vector<VkSemaphore> imageAvailableSemaphores;
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::vector<VkFence> inFlightFences;
+        std::vector<VkFence> imagesInFlight;
+        size_t currentFrame = 0;
+
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-        NateSwapChain(NateDevice& deviceRef, VkExtent2D windowExtent);
+        NateSwapChain(NateDevice& deviceRef, VkExtent2D windowExtent); 
+        NateSwapChain(NateDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<NateSwapChain> previous);
         ~NateSwapChain();
 
         NateSwapChain(const NateSwapChain&) = delete;
-        void operator=(const NateSwapChain&) = delete;
+        NateSwapChain& operator=(const NateSwapChain&) = delete;
 
         VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
         VkRenderPass getRenderPass() { return renderPass; }
@@ -41,6 +68,7 @@ namespace nate
         VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
     private:
+        void init();
         void createSwapChain();
         void createImageViews();
         void createDepthResources();
@@ -54,28 +82,5 @@ namespace nate
         VkPresentModeKHR chooseSwapPresentMode(
             const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-
-        VkFormat swapChainImageFormat;
-        VkExtent2D swapChainExtent;
-
-        std::vector<VkFramebuffer> swapChainFramebuffers;
-        VkRenderPass renderPass;
-
-        std::vector<VkImage> depthImages;
-        std::vector<VkDeviceMemory> depthImageMemorys;
-        std::vector<VkImageView> depthImageViews;
-        std::vector<VkImage> swapChainImages;
-        std::vector<VkImageView> swapChainImageViews;
-
-        NateDevice& device;
-        VkExtent2D windowExtent;
-
-        VkSwapchainKHR swapChain;
-
-        std::vector<VkSemaphore> imageAvailableSemaphores;
-        std::vector<VkSemaphore> renderFinishedSemaphores;
-        std::vector<VkFence> inFlightFences;
-        std::vector<VkFence> imagesInFlight;
-        size_t currentFrame = 0;
     };
 }

@@ -1,5 +1,9 @@
 #include "first_app.hpp"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 #include <stdexcept>
 #include <array>
 
@@ -9,7 +13,7 @@ namespace nate
 	{
 		loadModels();
 		createPipelineLayout();
-		createPipeline();
+		recreateSwapChain();
 		createCommandBuffers();
 	}
 
@@ -56,8 +60,12 @@ namespace nate
 
 	void FirstApp::createPipeline()
 	{
-		auto pipelineConfig = NatePipeline::defaultPipelineConfigInfo(nateSwapChain.width(), nateSwapChain.height());
-		pipelineConfig.renderPass = nateSwapChain.getRenderPass();
+		assert(nateSwapChain != nullptr && "Cannot create pipeline before swap chain!");
+		assert(pipelineLayout != nullptr && "Cannot create pipeline before layout!");
+
+		PipelineConfigInfo pipelineConfig{};
+		NatePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		pipelineConfig.renderPass = nateSwapChain->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		natePipeline = std::make_unique<NatePipeline>(
 			nateDevice,
@@ -66,9 +74,39 @@ namespace nate
 			pipelineConfig);
 	}
 
+	void FirstApp::recreateSwapChain()
+	{
+		auto extent = nateWindow.getExtent();
+		while (extent.width == 0 || extent.height == 0)
+		{
+			extent = nateWindow.getExtent();
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(nateDevice.device());
+		nateSwapChain = nullptr;
+		nateSwapChain = std::make_unique<NateSwapChain>(nateDevice, extent);
+
+		// If render pass compatible do nothing else
+		if (nateSwapChain == nullptr)
+		{
+			nateSwapChain = std::make_unique<NateSwapChain>(nateDevice, extent);
+		}
+		else
+		{
+			nateSwapChain = std::make_unique<NateSwapChain>(nateDevice, extent, std::move(nateSwapChain));
+			if (nateSwapChain->imageCount() != commandBuffers.size())
+			{
+				freeCommandBuffers();
+				createCommandBuffers();
+			}
+		}
+		createPipeline();
+	}
+
 	void FirstApp::createCommandBuffers()
 	{
-		commandBuffers.resize(nateSwapChain.imageCount());
+		commandBuffers.resize(nateSwapChain->imageCount());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -80,56 +118,91 @@ namespace nate
 		{
 			throw::std::runtime_error("Failed to allocate command buffers!");
 		}
+	}
 
-		for (int i = 0; i < commandBuffers.size(); i++)
+	void FirstApp::freeCommandBuffers()
+	{
+		vkFreeCommandBuffers(
+			nateDevice.device(),
+			nateDevice.getCommandPool(),
+			static_cast<float>(commandBuffers.size()),
+			commandBuffers.data());
+		commandBuffers.clear();
+	}
+
+	void FirstApp::recordCommandBuffer(int imageIndex)
+	{
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+		if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
 		{
-			VkCommandBufferBeginInfo beginInfo{};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+			throw std::runtime_error("Failed to begin recording command buffer!");
+		}
 
-			if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS)
-			{
-				throw std::runtime_error("Failed to begin recording command buffer!");
-			}
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = nateSwapChain->getRenderPass();
+		renderPassInfo.framebuffer = nateSwapChain->getFrameBuffer(imageIndex);
 
-			VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = nateSwapChain.getRenderPass();
-			renderPassInfo.framebuffer = nateSwapChain.getFrameBuffer(i);
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = nateSwapChain->getSwapChainExtent();
 
-			renderPassInfo.renderArea.offset = { 0, 0 };
-			renderPassInfo.renderArea.extent = nateSwapChain.getSwapChainExtent();
+		std::array<VkClearValue, 2> clearValues{};
+		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
 
-			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
 
-			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
+		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(nateSwapChain->getSwapChainExtent().width);
+		viewport.height = static_cast<float>(nateSwapChain->getSwapChainExtent().height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		VkRect2D scissor{ {0, 0}, nateSwapChain->getSwapChainExtent() };
+		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-			natePipeline->bind(commandBuffers[i]);
-			nateModel->bind(commandBuffers[i]);
-			nateModel->draw(commandBuffers[i]);
+		natePipeline->bind(commandBuffers[imageIndex]);
+		nateModel->bind(commandBuffers[imageIndex]);
+		nateModel->draw(commandBuffers[imageIndex]);
 
-			vkCmdEndRenderPass(commandBuffers[i]);
-			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
-			{
-				throw std::runtime_error("Failed to record command buffer!");
-			}
+		vkCmdEndRenderPass(commandBuffers[imageIndex]);
+		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to record command buffer!");
 		}
 	}
 
 	void FirstApp::drawFrame()
 	{
 		uint32_t imageIndex;
-		auto result = nateSwapChain.acquireNextImage(&imageIndex);
+		auto result = nateSwapChain->acquireNextImage(&imageIndex);
+
+		if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			recreateSwapChain();
+			return;
+		}
+
 		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 		{
 			throw std::runtime_error("Failed to acquire swap chain image!");
 		}
 
-		result = nateSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		recordCommandBuffer(imageIndex);
+		result = nateSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || nateWindow.wasWindowResized())
+		{
+			nateWindow.resetWindowResizedFlag();
+			recreateSwapChain();
+			return;
+		}
 		if (result != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to present swap chain image!");

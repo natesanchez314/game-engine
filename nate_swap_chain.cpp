@@ -14,6 +14,20 @@ namespace nate
     NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent)
         : device{ deviceRef }, windowExtent{ extent } 
     {
+        init();
+    }
+
+    NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent, std::shared_ptr<NateSwapChain> previous)
+        : device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous }
+    {
+        init();
+
+        // clean up old swap chain
+        oldSwapChain = nullptr;
+    }
+
+    void NateSwapChain::init()
+    {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -106,7 +120,7 @@ namespace nate
         vkResetFences(device.device(), 1, &inFlightFences[currentFrame]);
         if (vkQueueSubmit(device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) 
         {
-            throw std::runtime_error("failed to submit draw command buffer!");
+            throw std::runtime_error("Failed to submit draw command buffer!");
         }
 
         VkPresentInfoKHR presentInfo = {};
@@ -175,7 +189,7 @@ namespace nate
         createInfo.presentMode = presentMode;
         createInfo.clipped = VK_TRUE;
 
-        createInfo.oldSwapchain = VK_NULL_HANDLE;
+        createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
         if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) 
         {
@@ -354,7 +368,7 @@ namespace nate
 
             if (vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) 
             {
-                throw std::runtime_error("failed to create texture image view!");
+                throw std::runtime_error("Failed to create texture image view!");
             }
         }
     }
@@ -381,7 +395,7 @@ namespace nate
                 VK_SUCCESS ||
                 vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) 
             {
-                throw std::runtime_error("failed to create synchronization objects for a frame!");
+                throw std::runtime_error("Failed to create synchronization objects for a frame!");
             }
         }
     }
@@ -409,15 +423,6 @@ namespace nate
                 return availablePresentMode;
             }
         }
-
-        // for (const auto &availablePresentMode : availablePresentModes) 
-        // {
-        //      if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) 
-        //      {
-        //          std::cout << "Present mode: Immediate" << std::endl;
-        //          return availablePresentMode;
-        //      }
-        // }
 
         std::cout << "Present mode: V-Sync" << std::endl;
         return VK_PRESENT_MODE_FIFO_KHR;

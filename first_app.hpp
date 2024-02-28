@@ -20,7 +20,7 @@ namespace nate
 	private:
 		NateWindow nateWindow{WIDTH, HEIGHT, "Vulkan is hard"};
 		NateDevice nateDevice{nateWindow};
-		NateSwapChain nateSwapChain{ nateDevice, nateWindow.getExtent() };
+		std::unique_ptr<NateSwapChain> nateSwapChain;
 		std::unique_ptr<NatePipeline> natePipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
@@ -40,6 +40,9 @@ namespace nate
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 	};
 }

@@ -31,7 +31,7 @@ namespace nate
 		~NateModel();
 
 		NateModel(const NateModel&) = delete;
-		NateModel operator=(const NateModel&) = delete;
+		NateModel& operator=(const NateModel&) = delete;
 
 		void bind(VkCommandBuffer commandBuffer);
 		void draw(VkCommandBuffer commandBuffer);
