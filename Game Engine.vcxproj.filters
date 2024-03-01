@@ -41,6 +41,9 @@
     <ClCompile Include="nate_model.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_game_object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -61,6 +64,11 @@
     <ClInclude Include="nate_swap_chain.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_model.hpp" />
+    <ClInclude Include="nate_game_object.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="nate_model.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "nate_device.hpp"
 #include "nate_swap_chain.hpp"
 #include "nate_model.hpp"
+#include "nate_game_object.hpp"
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ namespace nate
 		std::unique_ptr<NatePipeline> natePipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
-		std::unique_ptr<NateModel> nateModel;
+		std::vector<NateGameObject> gameObjects;
 
 	public:
 		FirstApp();
@@ -36,7 +37,7 @@ namespace nate
 		void run();
 
 	private:
-		void loadModels();
+		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -44,5 +45,6 @@ namespace nate
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 	};
 }
