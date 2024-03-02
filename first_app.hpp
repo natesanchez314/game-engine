@@ -1,11 +1,9 @@
 #pragma once
 
 #include "nate_window.hpp"
-#include "nate_pipeline.hpp"
 #include "nate_device.hpp"
-#include "nate_swap_chain.hpp"
-#include "nate_model.hpp"
 #include "nate_game_object.hpp"
+#include "nate_renderer.hpp"
 
 #include <memory>
 #include <vector>
@@ -19,12 +17,9 @@ namespace nate
 		static constexpr int HEIGHT = 600;
 
 	private:
-		NateWindow nateWindow{WIDTH, HEIGHT, "Vulkan is hard"};
-		NateDevice nateDevice{nateWindow};
-		std::unique_ptr<NateSwapChain> nateSwapChain;
-		std::unique_ptr<NatePipeline> natePipeline;
-		VkPipelineLayout pipelineLayout;
-		std::vector<VkCommandBuffer> commandBuffers;
+		NateWindow nateWindow{ WIDTH, HEIGHT, "Vulkan is hard" };
+		NateDevice nateDevice{ nateWindow };
+		NateRenderer nateRenderer{ nateWindow, nateDevice };
 		std::vector<NateGameObject> gameObjects;
 
 	public:
@@ -38,13 +33,5 @@ namespace nate
 
 	private:
 		void loadGameObjects();
-		void createPipelineLayout();
-		void createPipeline();
-		void createCommandBuffers();
-		void freeCommandBuffers();
-		void drawFrame();
-		void recreateSwapChain();
-		void recordCommandBuffer(int imageIndex);
-		void renderGameObjects(VkCommandBuffer commandBuffer);
 	};
 }

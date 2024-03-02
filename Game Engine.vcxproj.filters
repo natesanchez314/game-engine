@@ -44,6 +44,15 @@
     <ClCompile Include="nate_game_object.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_renderer.hpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="nate_renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_render_system.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -68,6 +77,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="nate_model.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_render_system.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,6 +16,7 @@ namespace nate
     {
     private:
         VkFormat swapChainImageFormat;
+        VkFormat swapChainDepthFormat;
         VkExtent2D swapChainExtent;
 
         std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -66,6 +67,12 @@ namespace nate
 
         VkResult acquireNextImage(uint32_t* imageIndex);
         VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
+
+        bool compareSwapFormats(const NateSwapChain& swapChain) const
+        {
+            return swapChain.swapChainDepthFormat == swapChainDepthFormat &&
+                swapChain.swapChainImageFormat == swapChainImageFormat;
+        }
 
     private:
         void init();
