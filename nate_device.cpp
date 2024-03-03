@@ -597,4 +597,4 @@ namespace nate
             throw std::runtime_error("failed to bind image memory!");
         }
     }
-}  // namespace lve
+}  // namespace Nate

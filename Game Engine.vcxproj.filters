@@ -41,9 +41,6 @@
     <ClCompile Include="nate_model.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="nate_game_object.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="nate_renderer.hpp">
       <Filter>src</Filter>
     </ClCompile>
