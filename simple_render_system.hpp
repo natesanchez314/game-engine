@@ -3,6 +3,7 @@
 #include "nate_pipeline.hpp"
 #include "nate_device.hpp"
 #include "nate_game_object.hpp"
+#include "nate_camera.hpp"
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ namespace nate
 		SimpleRenderSystem operator=(const SimpleRenderSystem&) = delete;
 
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects);
+		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects, const NateCamera& camera);
 
 	private:
 		void createPipelineLayout();

@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
     <ClCompile Include="first_app.hpp" />
+    <ClCompile Include="nate_camera.cpp" />
     <ClCompile Include="nate_device.cpp" />
     <ClCompile Include="nate_model.cpp" />
     <ClCompile Include="nate_pipeline.cpp" />
@@ -154,6 +155,7 @@
     <None Include="simple_shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="nate_camera.hpp" />
     <ClInclude Include="nate_device.hpp" />
     <ClInclude Include="nate_game_object.hpp" />
     <ClInclude Include="nate_model.hpp" />

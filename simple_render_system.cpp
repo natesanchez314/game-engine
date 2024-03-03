@@ -63,7 +63,7 @@ namespace nate
 			pipelineConfig);
 	}
 
-	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects)
+	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects, const NateCamera& camera)
 	{
 		natePipeline->bind(commandBuffer);
 		for (auto& obj : gameObjects)
@@ -73,7 +73,7 @@ namespace nate
 
 			SimplePushConstantData push{};
 			push.color = obj.color;
-			push.transform = obj.transform.mat4();
+			push.transform = camera.getProjection() * obj.transform.mat4();
 
 			vkCmdPushConstants(
 				commandBuffer,

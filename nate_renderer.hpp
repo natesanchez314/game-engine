@@ -30,6 +30,7 @@ namespace nate
 		NateRenderer operator=(const NateRenderer&) = delete;
 
 		VkRenderPass getSwapChainRenderPass() const { return nateSwapChain->getRenderPass(); }
+		float getAspectRatio() const { return nateSwapChain->extentAspectRatio(); }
 		bool isFrameInProgress() const { return isFrameStarted; }
 		VkCommandBuffer getCurrentCommandBuffer() const 
 		{

@@ -1,6 +1,7 @@
 #include "first_app.hpp"
 
 #include "simple_render_system.hpp"
+#include "nate_camera.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -24,14 +25,20 @@ namespace nate
 	void FirstApp::run()
 	{
 		SimpleRenderSystem simpleRenderSystem{ nateDevice, nateRenderer.getSwapChainRenderPass() };
+        NateCamera camera{};
 
 		while (!nateWindow.shouldClose())
 		{
 			glfwPollEvents();
+
+            float aspect = nateRenderer.getAspectRatio();
+            //camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.01f, 10.0f);
+
 			if (auto commandBuffer = nateRenderer.beginFrame())
 			{
 				nateRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				nateRenderer.endSwapChainRenderPass(commandBuffer);
 				nateRenderer.endFrame();
 			}
@@ -106,7 +113,7 @@ namespace nate
 
         auto cube = NateGameObject::createGameObject();
         cube.model = nateModel;
-        cube.transform.translation = { 0.0f, 0.0f, 0.5f };
+        cube.transform.translation = { 0.0f, 0.0f, 2.5f };
         cube.transform.scale = { 0.5f, 0.5f, 0.5f };
 
         gameObjects.push_back(std::move(cube));

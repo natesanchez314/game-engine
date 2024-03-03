@@ -50,6 +50,9 @@
     <ClCompile Include="simple_render_system.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -77,6 +80,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="simple_render_system.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="nate_camera.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
