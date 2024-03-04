@@ -53,6 +53,12 @@
     <ClCompile Include="nate_camera.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="keyboard_movement_controller.hpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard_movement_controller.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">

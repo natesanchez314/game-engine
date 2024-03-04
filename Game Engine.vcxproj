@@ -137,6 +137,8 @@
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
     <ClCompile Include="first_app.hpp" />
+    <ClCompile Include="keyboard_movement_controller.cpp" />
+    <ClCompile Include="keyboard_movement_controller.hpp" />
     <ClCompile Include="nate_camera.cpp" />
     <ClCompile Include="nate_device.cpp" />
     <ClCompile Include="nate_model.cpp" />
