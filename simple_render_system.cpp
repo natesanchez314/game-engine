@@ -58,8 +58,8 @@ namespace nate
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		natePipeline = std::make_unique<NatePipeline>(
 			nateDevice,
-			"simple_shader.vert.spv",
-			"simple_shader.frag.spv",
+			"shaders/simple_shader.vert.spv",
+			"shaders/simple_shader.frag.spv",
 			pipelineConfig);
 	}
 
