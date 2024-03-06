@@ -4,10 +4,8 @@
 #include <vector>
 #include "nate_device.hpp"
 
-namespace nate
-{
-	struct PipelineConfigInfo
-	{
+namespace nate {
+	struct PipelineConfigInfo {
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
@@ -25,8 +23,7 @@ namespace nate
 		uint32_t subpass = 0;
 	};
 
-	class NatePipeline
-	{
+	class NatePipeline {
 	private:
 		NateDevice& nateDevice;
 		VkPipeline graphicsPipeline;

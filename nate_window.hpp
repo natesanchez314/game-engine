@@ -5,10 +5,8 @@
 
 #include <string>
 
-namespace nate
-{
-	class NateWindow
-	{
+namespace nate {
+	class NateWindow {
 	private:
 		int width;
 		int height;

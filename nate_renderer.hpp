@@ -9,10 +9,8 @@
 #include <vector>
 #include <cassert>
 
-namespace nate
-{
-	class NateRenderer
-	{
+namespace nate {
+	class NateRenderer {
 	private:
 		NateWindow& nateWindow;
 		NateDevice& nateDevice;
@@ -32,14 +30,12 @@ namespace nate
 		VkRenderPass getSwapChainRenderPass() const { return nateSwapChain->getRenderPass(); }
 		float getAspectRatio() const { return nateSwapChain->extentAspectRatio(); }
 		bool isFrameInProgress() const { return isFrameStarted; }
-		VkCommandBuffer getCurrentCommandBuffer() const 
-		{
+		VkCommandBuffer getCurrentCommandBuffer() const {
 			assert(isFrameStarted && "Cannot get command buffer when frame not in progress!");
 			return commandBuffers[currentFrameIndex]; 
 		}
 
-		int getFrameIndex() const
-		{
+		int getFrameIndex() const {
 			assert(isFrameStarted && "Cannot get frame index when frame not in progress!");
 			return currentFrameIndex;
 		}

@@ -42,14 +42,12 @@ namespace nate
 		pipelineLayoutInfo.pSetLayouts = nullptr;
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-		if (vkCreatePipelineLayout(nateDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
-		{
+		if (vkCreatePipelineLayout(nateDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create pipeline layout!");
 		}
 	}
 
-	void SimpleRenderSystem::createPipeline(VkRenderPass renderPass)
-	{
+	void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
 		assert(pipelineLayout != nullptr && "Cannot create pipeline before layout!");
 
 		PipelineConfigInfo pipelineConfig{};
@@ -63,14 +61,12 @@ namespace nate
 			pipelineConfig);
 	}
 
-	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects, const NateCamera& camera)
-	{
+	void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<NateGameObject>& gameObjects, const NateCamera& camera) {
 		natePipeline->bind(commandBuffer);
 
 		auto projectionView = camera.getProjection() * camera.getView();
 
-		for (auto& obj : gameObjects)
-		{
+		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
 			push.color = obj.color;
 			push.transform = projectionView * obj.transform.mat4();

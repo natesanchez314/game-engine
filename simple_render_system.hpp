@@ -8,10 +8,9 @@
 #include <memory>
 #include <vector>
 
-namespace nate
-{
-	class SimpleRenderSystem
-	{
+namespace nate {
+
+	class SimpleRenderSystem {
 	private:
 		NateDevice& nateDevice;
 		VkPipelineLayout pipelineLayout;

@@ -165,6 +165,7 @@
     <ClInclude Include="nate_model.hpp" />
     <ClInclude Include="nate_pipeline.hpp" />
     <ClInclude Include="nate_swap_chain.hpp" />
+    <ClInclude Include="nate_utils.hpp" />
     <ClInclude Include="simple_render_system.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

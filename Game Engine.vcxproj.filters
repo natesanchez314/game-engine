@@ -99,5 +99,6 @@
     <ClInclude Include="nate_camera.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="nate_utils.hpp" />
   </ItemGroup>
 </Project>

@@ -7,27 +7,26 @@
 #include <iostream>
 #include <cassert>
 
-namespace nate
-{
-	NatePipeline::NatePipeline(NateDevice& device, const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo)
-		: nateDevice{ device }
-	{
+namespace nate {
+	NatePipeline::NatePipeline(
+		NateDevice& device, 
+		const std::string& vertFilePath, 
+		const std::string& fragFilePath, 
+		const PipelineConfigInfo& configInfo) 
+		: nateDevice{ device } {
 		createGraphicsPipeline(vertFilePath, fragFilePath, configInfo);
 	}
 
-	NatePipeline::~NatePipeline()
-	{
+	NatePipeline::~NatePipeline() {
 		vkDestroyShaderModule(nateDevice.device(), vertShaderModule, nullptr);
 		vkDestroyShaderModule(nateDevice.device(), fragShaderModule, nullptr);
 		vkDestroyPipeline(nateDevice.device(), graphicsPipeline, nullptr);
 	}
 
-	std::vector<char> NatePipeline::readFile(const std::string& filePath)
-	{
+	std::vector<char> NatePipeline::readFile(const std::string& filePath) {
 		std::ifstream file(filePath, std::ios::ate | std::ios::binary);
 		
-		if (!file.is_open())
-		{
+		if (!file.is_open()) {
 			throw std::runtime_error("failed to open file: " + filePath);
 		}
 
@@ -41,8 +40,10 @@ namespace nate
 		return buffer;
 	}
 
-	void NatePipeline::createGraphicsPipeline(const std::string& vertFilePath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo)
-	{
+	void NatePipeline::createGraphicsPipeline(
+		const std::string& vertFilePath, 
+		const std::string& fragFilePath, 
+		const PipelineConfigInfo& configInfo) {
 		assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline:: no pipelineLayout provided in configInfo");
 		assert(configInfo.renderPass!= VK_NULL_HANDLE && "Cannot create graphics pipeline:: no renderPass provided in configInfo");
 
@@ -99,32 +100,33 @@ namespace nate
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(nateDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
-		{
+		if (vkCreateGraphicsPipelines(
+			nateDevice.device(), 
+			VK_NULL_HANDLE, 
+			1, 
+			&pipelineInfo, 
+			nullptr, 
+			&graphicsPipeline) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create graphics pipeline!");
 		}
 	}
 
-	void NatePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
-	{
+	void NatePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-		if (vkCreateShaderModule(nateDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
-		{
+		if (vkCreateShaderModule(nateDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create shader module!");
 		}
 	}
 
-	void NatePipeline::bind(VkCommandBuffer commandBuffer)
-	{
+	void NatePipeline::bind(VkCommandBuffer commandBuffer) {
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
-	void NatePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
-	{
+	void NatePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;

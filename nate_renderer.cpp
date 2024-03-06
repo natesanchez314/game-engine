@@ -4,48 +4,37 @@
 #include <array>
 #include <cassert>
 
-namespace nate
-{
-	NateRenderer::NateRenderer(NateWindow& window, NateDevice& device)
-		:nateWindow(window), nateDevice(device)
-	{
+namespace nate {
+	NateRenderer::NateRenderer(NateWindow& window, NateDevice& device) : nateWindow(window), nateDevice(device) {
 		recreateSwapChain();
 		createCommandBuffers();
 	}
 
-	NateRenderer::~NateRenderer()
-	{
+	NateRenderer::~NateRenderer() {
 		freeCommandBuffers();
 	}
 
-	void NateRenderer::recreateSwapChain()
-	{
+	void NateRenderer::recreateSwapChain() {
 		auto extent = nateWindow.getExtent();
-		while (extent.width == 0 || extent.height == 0)
-		{
+		while (extent.width == 0 || extent.height == 0) {
 			extent = nateWindow.getExtent();
 			glfwWaitEvents();
 		}
 
 		vkDeviceWaitIdle(nateDevice.device());
 
-		if (nateSwapChain == nullptr)
-		{
+		if (nateSwapChain == nullptr) {
 			nateSwapChain = std::make_unique<NateSwapChain>(nateDevice, extent);
-		}
-		else
-		{
+		} else {
 			std::shared_ptr<NateSwapChain> oldSwapChain = std::move(nateSwapChain);
 			nateSwapChain = std::make_unique<NateSwapChain>(nateDevice, extent, oldSwapChain);
-			if (!oldSwapChain->compareSwapFormats(*nateSwapChain.get()))
-			{
+			if (!oldSwapChain->compareSwapFormats(*nateSwapChain.get())) {
 				throw std::runtime_error("Swap chain image(or depth) format has changed!");
 			}
 		}
 	}
 
-	void NateRenderer::createCommandBuffers()
-	{
+	void NateRenderer::createCommandBuffers() {
 		commandBuffers.resize(NateSwapChain::MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo allocInfo{};
@@ -54,14 +43,12 @@ namespace nate
 		allocInfo.commandPool = nateDevice.getCommandPool();
 		allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-		if (vkAllocateCommandBuffers(nateDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
-		{
+		if (vkAllocateCommandBuffers(nateDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
 			throw::std::runtime_error("Failed to allocate command buffers!");
 		}
 	}
 
-	void NateRenderer::freeCommandBuffers()
-	{
+	void NateRenderer::freeCommandBuffers() {
 		vkFreeCommandBuffers(
 			nateDevice.device(),
 			nateDevice.getCommandPool(),
@@ -70,20 +57,17 @@ namespace nate
 		commandBuffers.clear();
 	}
 
-	VkCommandBuffer NateRenderer::beginFrame()
-	{
+	VkCommandBuffer NateRenderer::beginFrame() {
 		assert(!isFrameStarted && "Can't call beginFrame while already in progress!");
 
 		auto result = nateSwapChain->acquireNextImage(&currentImageIndex);
 
-		if (result == VK_ERROR_OUT_OF_DATE_KHR)
-		{
+		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 			recreateSwapChain();
 			return nullptr;
 		}
 
-		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-		{
+		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
 			throw std::runtime_error("Failed to acquire swap chain image!");
 		}
 
@@ -94,33 +78,27 @@ namespace nate
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-		{
+		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to begin recording command buffer!");
 		}
 
 		return commandBuffer;
 	}
 
-	void NateRenderer::endFrame()
-	{
+	void NateRenderer::endFrame() {
 		assert(isFrameStarted && "Can't call endFrame if frame is not in progress!");
 
 		auto commandBuffer = getCurrentCommandBuffer();
 
-		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-		{
+		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to record command buffer!");
 		}
 
 		auto result = nateSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
-		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || nateWindow.wasWindowResized())
-		{
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || nateWindow.wasWindowResized()) {
 			nateWindow.resetWindowResizedFlag();
 			recreateSwapChain();
-		}
-		else if (result != VK_SUCCESS)
-		{
+		} else if (result != VK_SUCCESS) {
 			throw std::runtime_error("Failed to present swap chain image!");
 		}
 
@@ -128,8 +106,7 @@ namespace nate
 		currentFrameIndex = (currentFrameIndex + 1) % NateSwapChain::MAX_FRAMES_IN_FLIGHT;
 	}
 
-	void NateRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
-	{
+	void NateRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
 		assert(isFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress!");
 		assert(commandBuffer == getCurrentCommandBuffer() && "Can't begin render pass on command bufer from a different frame!");
 
@@ -162,8 +139,7 @@ namespace nate
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	void NateRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer)
-	{
+	void NateRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
 		assert(isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress!");
 		assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command bufer from a different frame!");
 
