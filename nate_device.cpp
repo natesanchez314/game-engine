@@ -6,15 +6,13 @@
 #include <set>
 #include <unordered_set>
 
-namespace nate
-{
+namespace nate {
     // local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,
         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-        void *pUserData) 
-    {
+        void *pUserData) {
         std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
         return VK_FALSE;
     }
@@ -23,17 +21,13 @@ namespace nate
         VkInstance instance,
         const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
         const VkAllocationCallbacks *pAllocator,
-        VkDebugUtilsMessengerEXT *pDebugMessenger)
-    {
+        VkDebugUtilsMessengerEXT *pDebugMessenger) {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
         instance,
         "vkCreateDebugUtilsMessengerEXT");
-        if (func != nullptr)
-        {
+        if (func != nullptr) {
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-        } 
-        else 
-        {
+        } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
     }
@@ -41,21 +35,17 @@ namespace nate
     void DestroyDebugUtilsMessengerEXT(
         VkInstance instance,
         VkDebugUtilsMessengerEXT debugMessenger,
-        const VkAllocationCallbacks *pAllocator) 
-    {
+        const VkAllocationCallbacks *pAllocator) {
         auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
         instance,
         "vkDestroyDebugUtilsMessengerEXT");
-        if (func != nullptr) 
-        {
+        if (func != nullptr) {
             func(instance, debugMessenger, pAllocator);
         }
     }
 
     // class member functions
-    NateDevice::NateDevice(NateWindow &window) 
-        : window{window}
-    {
+    NateDevice::NateDevice(NateWindow &window) : window{window} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -64,13 +54,11 @@ namespace nate
         createCommandPool();
     }
 
-    NateDevice::~NateDevice() 
-    {
+    NateDevice::~NateDevice() {
         vkDestroyCommandPool(device_, commandPool, nullptr);
         vkDestroyDevice(device_, nullptr);
 
-        if (enableValidationLayers) 
-        {
+        if (enableValidationLayers) {
             DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
 
@@ -78,10 +66,8 @@ namespace nate
         vkDestroyInstance(instance, nullptr);
     }
 
-    void NateDevice::createInstance() 
-    {
-        if (enableValidationLayers && !checkValidationLayerSupport()) 
-        {
+    void NateDevice::createInstance() {
+        if (enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
         }
 
@@ -102,51 +88,42 @@ namespace nate
         createInfo.ppEnabledExtensionNames = extensions.data();
         
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-        if (enableValidationLayers) 
-        {
+        if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
             createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
-        } 
-        else
-        {
+        } else {
             createInfo.enabledLayerCount = 0;
             createInfo.pNext = nullptr;
         }
 
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) 
-        {
+        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
         }
 
         hasGflwRequiredInstanceExtensions();
     }
 
-    void NateDevice::pickPhysicalDevice() 
-    {
+    void NateDevice::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-        if (deviceCount == 0)
-        {
+        if (deviceCount == 0) {
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
         }
         std::cout << "Device count: " << deviceCount << std::endl;
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-        for (const auto &device : devices) 
-        {
-            if (isDeviceSuitable(device)) 
-            {
+        for (const auto &device : devices) {
+            if (isDeviceSuitable(device)) {
                 physicalDevice = device;
                 break;
             }
         }
 
-        if (physicalDevice == VK_NULL_HANDLE) 
-        {
+        if (physicalDevice == VK_NULL_HANDLE) {
             throw std::runtime_error("failed to find a suitable GPU!");
         }
 
@@ -154,16 +131,14 @@ namespace nate
         std::cout << "physical device: " << properties.deviceName << std::endl;
     }
 
-    void NateDevice::createLogicalDevice() 
-    {
+    void NateDevice::createLogicalDevice() {
         QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
         std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
 
         float queuePriority = 1.0f;
-        for (uint32_t queueFamily : uniqueQueueFamilies) 
-        {
+        for (uint32_t queueFamily : uniqueQueueFamilies) {
             VkDeviceQueueCreateInfo queueCreateInfo = {};
             queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -187,18 +162,14 @@ namespace nate
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
-        if (enableValidationLayers) 
-        {
+        if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } 
-        else 
-        {
+        } else {
             createInfo.enabledLayerCount = 0;
         }
 
-        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) 
-        {
+        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
             throw std::runtime_error("failed to create logical device!");
         }
 
@@ -206,8 +177,7 @@ namespace nate
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
     }
 
-    void NateDevice::createCommandPool() 
-    {
+    void NateDevice::createCommandPool() {
         QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
 
         VkCommandPoolCreateInfo poolInfo = {};
@@ -216,26 +186,22 @@ namespace nate
         poolInfo.flags =
             VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         
-        if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
-        {
+        if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create command pool!");
         }
     }
 
-    void NateDevice::createSurface()
-    { 
+    void NateDevice::createSurface() { 
         window.createWindowSurface(instance, &surface_); 
     }
 
-    bool NateDevice::isDeviceSuitable(VkPhysicalDevice device) 
-    {
+    bool NateDevice::isDeviceSuitable(VkPhysicalDevice device) {
         QueueFamilyIndices indices = findQueueFamilies(device);
 
         bool extensionsSupported = checkDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
-        if (extensionsSupported) 
-        {
+        if (extensionsSupported) {
             SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
@@ -246,8 +212,7 @@ namespace nate
         return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
     }
 
-    void NateDevice::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) 
-    {
+    void NateDevice::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
         createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
@@ -259,64 +224,54 @@ namespace nate
         createInfo.pUserData = nullptr;  // Optional
     }
 
-    void NateDevice::setupDebugMessenger() 
-    {
+    void NateDevice::setupDebugMessenger() {
         if (!enableValidationLayers) return;
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
-        if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) 
-        {
+        if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
           throw std::runtime_error("failed to set up debug messenger!");
         }
     }
 
-    bool NateDevice::checkValidationLayerSupport() 
-    {
+    bool NateDevice::checkValidationLayerSupport() {
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
         
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
         
-        for (const char *layerName : validationLayers) 
-        {
+        for (const char *layerName : validationLayers) {
             bool layerFound = false;
 
-            for (const auto &layerProperties : availableLayers) 
-            {
-                if (strcmp(layerName, layerProperties.layerName) == 0) 
-                {
+            for (const auto &layerProperties : availableLayers) {
+                if (strcmp(layerName, layerProperties.layerName) == 0) {
                     layerFound = true;
                     break;
                 }
             }
 
-            if (!layerFound) 
-            {
+            if (!layerFound) {
               return false;
             }
         }
         return true;
     }
 
-    std::vector<const char *> NateDevice::getRequiredExtensions()
-    {
+    std::vector<const char *> NateDevice::getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
         std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-        if (enableValidationLayers)
-        {
+        if (enableValidationLayers) {
             extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
 
         return extensions;
     }
 
-    void NateDevice::hasGflwRequiredInstanceExtensions() 
-    {
+    void NateDevice::hasGflwRequiredInstanceExtensions() {
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
@@ -324,26 +279,22 @@ namespace nate
     
         std::cout << "available extensions:" << std::endl;
         std::unordered_set<std::string> available;
-        for (const auto &extension : extensions) 
-        {
+        for (const auto &extension : extensions) {
             std::cout << "\t" << extension.extensionName << std::endl;
             available.insert(extension.extensionName);
         }
     
         std::cout << "required extensions:" << std::endl;
         auto requiredExtensions = getRequiredExtensions();
-        for (const auto &required : requiredExtensions) 
-        {
+        for (const auto &required : requiredExtensions) {
             std::cout << "\t" << required << std::endl;
-            if (available.find(required) == available.end()) 
-            {
+            if (available.find(required) == available.end()) {
                 throw std::runtime_error("Missing required glfw extension");
             }
         }
     }
 
-    bool NateDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) 
-    {
+    bool NateDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
     
@@ -356,16 +307,14 @@ namespace nate
     
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
     
-        for (const auto &extension : availableExtensions) 
-        {
+        for (const auto &extension : availableExtensions) {
             requiredExtensions.erase(extension.extensionName);
         }
     
       return requiredExtensions.empty();
     }
 
-    QueueFamilyIndices NateDevice::findQueueFamilies(VkPhysicalDevice device) 
-    {
+    QueueFamilyIndices NateDevice::findQueueFamilies(VkPhysicalDevice device) {
         QueueFamilyIndices indices;
     
         uint32_t queueFamilyCount = 0;
@@ -375,22 +324,18 @@ namespace nate
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
     
         int i = 0;
-        for (const auto &queueFamily : queueFamilies) 
-        {
-            if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) 
-            {
+        for (const auto &queueFamily : queueFamilies) {
+            if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
                 indices.graphicsFamily = i;
                 indices.graphicsFamilyHasValue = true;
             }
             VkBool32 presentSupport = false;
             vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
-            if (queueFamily.queueCount > 0 && presentSupport) 
-            {
+            if (queueFamily.queueCount > 0 && presentSupport) {
                 indices.presentFamily = i;
                 indices.presentFamilyHasValue = true;
             }
-            if (indices.isComplete()) 
-            {
+            if (indices.isComplete()) {
                 break;
             }
             i++;
@@ -398,16 +343,14 @@ namespace nate
         return indices;
     }
 
-    SwapChainSupportDetails NateDevice::querySwapChainSupport(VkPhysicalDevice device) 
-    {
+    SwapChainSupportDetails NateDevice::querySwapChainSupport(VkPhysicalDevice device) {
         SwapChainSupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
     
         uint32_t formatCount;
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
     
-        if (formatCount != 0) 
-        {
+        if (formatCount != 0) {
             details.formats.resize(formatCount);
             vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
         }
@@ -415,8 +358,7 @@ namespace nate
         uint32_t presentModeCount;
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, nullptr);
     
-        if (presentModeCount != 0) 
-        {
+        if (presentModeCount != 0) {
             details.presentModes.resize(presentModeCount);
             vkGetPhysicalDeviceSurfacePresentModesKHR(
                 device,
@@ -427,33 +369,25 @@ namespace nate
         return details;
     }
 
-    VkFormat NateDevice::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) 
-    {
-        for (VkFormat format : candidates) 
-        {
+    VkFormat NateDevice::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+        for (VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
     
-            if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) 
-            {
+            if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
                 return format;
-            }
-            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) 
-            {
+            } else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
                 return format;
             }
         }
         throw std::runtime_error("failed to find supported format!");
     }
 
-    uint32_t NateDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
-    {
+    uint32_t NateDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) 
-        {
-            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) 
-            {
+        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
                 return i;
             }
         }
@@ -465,16 +399,14 @@ namespace nate
         VkBufferUsageFlags usage,
         VkMemoryPropertyFlags properties,
         VkBuffer &buffer,
-        VkDeviceMemory &bufferMemory) 
-    {
+        VkDeviceMemory &bufferMemory) {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     
-        if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) 
-        {
+        if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
             throw std::runtime_error("failed to create vertex buffer!");
         }
     
@@ -486,16 +418,14 @@ namespace nate
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
     
-        if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
-        {
+        if (vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
           throw std::runtime_error("failed to allocate vertex buffer memory!");
         }
     
         vkBindBufferMemory(device_, buffer, bufferMemory, 0);
     }
 
-    VkCommandBuffer NateDevice::beginSingleTimeCommands()
-    {
+    VkCommandBuffer NateDevice::beginSingleTimeCommands() {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -513,8 +443,7 @@ namespace nate
         return commandBuffer;
     }
 
-    void NateDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer) 
-    {
+    void NateDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
         vkEndCommandBuffer(commandBuffer);
     
         VkSubmitInfo submitInfo{};
@@ -528,8 +457,7 @@ namespace nate
         vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
     }
 
-    void NateDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-    {
+    void NateDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
     
         VkBufferCopy copyRegion{};
@@ -541,8 +469,7 @@ namespace nate
         endSingleTimeCommands(commandBuffer);
     }
 
-    void NateDevice::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
-    {
+    void NateDevice::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount) {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
     
         VkBufferImageCopy region{};
@@ -572,10 +499,8 @@ namespace nate
         const VkImageCreateInfo &imageInfo,
         VkMemoryPropertyFlags properties,
         VkImage &image,
-        VkDeviceMemory &imageMemory) 
-    {
-        if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) 
-        {
+        VkDeviceMemory &imageMemory) {
+        if (vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image!");
         }
         
@@ -587,13 +512,11 @@ namespace nate
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
         
-        if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) 
-        {
+        if (vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate image memory!");
         }
         
-        if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) 
-        {
+        if (vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) {
             throw std::runtime_error("failed to bind image memory!");
         }
     }

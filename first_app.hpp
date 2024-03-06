@@ -8,10 +8,9 @@
 #include <memory>
 #include <vector>
 
-namespace nate
-{
-	class FirstApp
-	{
+namespace nate {
+
+	class FirstApp {
 	public:
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;

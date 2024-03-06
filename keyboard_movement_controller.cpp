@@ -2,18 +2,16 @@
 
 #include <limits>
 
-namespace nate
-{
-	void KeyboardMovementController::moveInPlaneXZ(GLFWwindow* window, float delta, NateGameObject& gameObject)
-	{
+namespace nate {
+
+	void KeyboardMovementController::moveInPlaneXZ(GLFWwindow* window, float delta, NateGameObject& gameObject) {
 		glm::vec3 rotate{ 0 };
 		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.0f;
 		if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.0f;
 		if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.0f;
 		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.0f;
 
-		if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon())
-		{
+		if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
 			gameObject.transform.rotation += lookSpeed * delta * glm::normalize(rotate);
 		}
 
@@ -33,8 +31,7 @@ namespace nate
 		if (glfwGetKey(window, keys.moveUp) == GLFW_PRESS) moveDir += upDir;
 		if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS) moveDir -= upDir;
 
-		if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon())
-		{
+		if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
 			gameObject.transform.translation += moveSpeed * delta * glm::normalize(moveDir);
 		}
 	}

@@ -6,16 +6,13 @@
 
 #include <memory>
 
-namespace nate
-{
-	struct TransformComponent 
-	{
+namespace nate {
+	struct TransformComponent {
 		glm::vec3 translation{};
 		glm::vec3 scale{ 1.0f, 1.0f, 1.0f };
 		glm::vec3 rotation{};
 
-		glm::mat4 mat4() 
-		{
+		glm::mat4 mat4() {
 			const float c3 = glm::cos(rotation.z);
 			const float s3 = glm::sin(rotation.z);
 			const float c2 = glm::cos(rotation.x);
@@ -45,8 +42,7 @@ namespace nate
 		}
 	};
 
-	class NateGameObject
-	{
+	class NateGameObject {
 	public:
 		using id_t = unsigned int;
 		std::shared_ptr<NateModel> model{};
@@ -57,8 +53,7 @@ namespace nate
 		id_t id;
 
 	public:
-		static NateGameObject createGameObject()
-		{
+		static NateGameObject createGameObject() {
 			static id_t currentId = 0;
 			return NateGameObject(currentId++);
 		}
@@ -71,8 +66,6 @@ namespace nate
 		NateGameObject& operator=(NateGameObject&&) = default;
 
 	private:
-		NateGameObject(id_t objId)
-			:id(objId)
-		{ }
+		NateGameObject(id_t objId) : id(objId) { }
 	};
 }

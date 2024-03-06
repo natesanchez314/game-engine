@@ -4,10 +4,9 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-namespace nate
-{
-	class NateCamera
-	{
+namespace nate {
+
+	class NateCamera {
 	private:
 		glm::mat4 projectionMatrix{ 1.0f };
 		glm::mat4 viewMatrix{ 1.0f };

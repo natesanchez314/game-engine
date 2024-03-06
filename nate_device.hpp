@@ -6,17 +6,15 @@
 #include <string>
 #include <vector>
 
-namespace nate
-{
-    struct SwapChainSupportDetails 
-    {
+namespace nate {
+
+    struct SwapChainSupportDetails {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkSurfaceFormatKHR> formats;
         std::vector<VkPresentModeKHR> presentModes;
     };
 
-    struct QueueFamilyIndices
-    {
+    struct QueueFamilyIndices {
         uint32_t graphicsFamily;
         uint32_t presentFamily;
         bool graphicsFamilyHasValue = false;
@@ -24,8 +22,7 @@ namespace nate
         bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
     };
 
-    class NateDevice
-    {
+    class NateDevice {
     public:
         #ifdef NDEBUG
             const bool enableValidationLayers = false;

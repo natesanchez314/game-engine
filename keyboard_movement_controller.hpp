@@ -3,13 +3,11 @@
 #include "nate_game_object.hpp"
 #include "nate_window.hpp"
 
-namespace nate
-{
-	class KeyboardMovementController
-	{
+namespace nate {
+
+	class KeyboardMovementController {
 	public:
-		struct KeyMappings
-		{
+		struct KeyMappings {
             int moveLeft = GLFW_KEY_A;
             int moveRight = GLFW_KEY_D;
             int moveForward = GLFW_KEY_W;
