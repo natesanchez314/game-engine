@@ -58,13 +58,21 @@ namespace nate {
 
 	void FirstApp::loadGameObjects() {
         //std::shared_ptr<NateModel> nateModel = NateModel::createModelFromFile(nateDevice, "res/colored_cube.obj");
-		std::shared_ptr<NateModel> nateModel = NateModel::createModelFromFile(nateDevice, "res/smooth_vase.obj");
+		std::shared_ptr<NateModel> nateModel0 = NateModel::createModelFromFile(nateDevice, "res/smooth_vase.obj");
+		std::shared_ptr<NateModel> nateModel1 = NateModel::createModelFromFile(nateDevice, "res/flat_vase.obj");
 
-        auto gameObject = NateGameObject::createGameObject();
-        gameObject.model = nateModel;
-        gameObject.transform.translation = { 0.0f, 0.0f, 2.5f };
-        gameObject.transform.scale = { 0.5f, 0.5f, 0.5f };
+        auto gameObject0 = NateGameObject::createGameObject();
+        gameObject0.model = nateModel0;
+        gameObject0.transform.translation = { -0.5f, 0.5f, 2.5f };
+        gameObject0.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject));
+        gameObjects.push_back(std::move(gameObject0));
+
+        auto gameObject1 = NateGameObject::createGameObject();
+        gameObject1.model = nateModel1;
+        gameObject1.transform.translation = { 0.5f, 0.5f, 2.5f };
+        gameObject1.transform.scale = glm::vec3(3.0f);
+
+        gameObjects.push_back(std::move(gameObject1));
 	}
 }

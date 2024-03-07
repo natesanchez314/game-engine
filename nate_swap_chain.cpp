@@ -10,11 +10,13 @@
 #include <stdexcept>
 
 namespace nate {
-    NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent) : device{ deviceRef }, windowExtent{ extent } {
+    NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent) 
+        : device{ deviceRef }, windowExtent{ extent } {
         init();
     }
 
-    NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent, std::shared_ptr<NateSwapChain> previous) : device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous } {
+    NateSwapChain::NateSwapChain(NateDevice& deviceRef, VkExtent2D extent, std::shared_ptr<NateSwapChain> previous) 
+        : device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous } {
         init();
         // clean up old swap chain
         oldSwapChain = nullptr;

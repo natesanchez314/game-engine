@@ -141,6 +141,7 @@
     <ClCompile Include="keyboard_movement_controller.hpp" />
     <ClCompile Include="nate_camera.cpp" />
     <ClCompile Include="nate_device.cpp" />
+    <ClCompile Include="nate_game_object.cpp" />
     <ClCompile Include="nate_model.cpp" />
     <ClCompile Include="nate_pipeline.cpp" />
     <ClCompile Include="nate_renderer.cpp" />

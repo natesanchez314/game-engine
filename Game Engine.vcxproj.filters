@@ -59,6 +59,9 @@
     <ClCompile Include="keyboard_movement_controller.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_game_object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple_shader.frag">
