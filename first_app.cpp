@@ -14,7 +14,6 @@
 #include <array>
 #include <cassert>
 #include <chrono>
-#include <numeric>
 
 namespace nate {
 
@@ -30,20 +29,18 @@ namespace nate {
 	FirstApp::~FirstApp() { }
 
 	void FirstApp::run() {
-        auto minOffsetAlignment = std::lcm(
-            nateDevice.properties.limits.minUniformBufferOffsetAlignment,
-            nateDevice.properties.limits.nonCoherentAtomSize
-        );
 
-        NateBuffer globalUboBuffer{
-            nateDevice,
-            sizeof(GlobalUbo),
-            NateSwapChain::MAX_FRAMES_IN_FLIGHT,
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            minOffsetAlignment
-        };
-        globalUboBuffer.map();
+        std::vector<std::unique_ptr<NateBuffer>> uboBuffers(NateSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < uboBuffers.size(); i++) {
+            uboBuffers[i] = std::make_unique<NateBuffer>(
+                nateDevice,
+                sizeof(GlobalUbo),
+                1,
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+            );
+            uboBuffers[i]->map();
+        }
 
 		SimpleRenderSystem simpleRenderSystem{ nateDevice, nateRenderer.getSwapChainRenderPass() };
         NateCamera camera{};
@@ -78,8 +75,8 @@ namespace nate {
                 // Update phase
                 GlobalUbo ubo{};
                 ubo.projectionView = camera.getProjection() * camera.getView();
-                globalUboBuffer.writeToIndex(&ubo, frameIndex);
-                globalUboBuffer.flushIndex(frameIndex);
+                uboBuffers[frameIndex]->writeToBuffer(&ubo);
+                uboBuffers[frameIndex]->flush();
 
                 // Render phase
 				nateRenderer.beginSwapChainRenderPass(commandBuffer);
