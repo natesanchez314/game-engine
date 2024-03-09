@@ -29,14 +29,7 @@ namespace nate {
 		createIndexBuffers(builder.indices);
 	}
 
-	NateModel::~NateModel() {
-		vkDestroyBuffer(nateDevice.device(), vertexBuffer, nullptr);
-		vkFreeMemory(nateDevice.device(), vertexBufferMemory, nullptr);
-		if (hasIndexBuffer) {
-			vkDestroyBuffer(nateDevice.device(), indexBuffer, nullptr);
-			vkFreeMemory(nateDevice.device(), indexBufferMemory, nullptr);
-		}
-	}
+	NateModel::~NateModel() {}
 
 	std::unique_ptr<NateModel> NateModel::createModelFromFile(NateDevice& device, const std::string& filepath) {
 		Builder builder{};
@@ -45,12 +38,12 @@ namespace nate {
 	}
 
 	void NateModel::bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer };
+		VkBuffer buffers[] = { vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
 		if (hasIndexBuffer) {
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 		}
 	}
 
@@ -66,34 +59,28 @@ namespace nate {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+		uint32_t vertexSize = sizeof(vertices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-		nateDevice.createBuffer(
-			bufferSize,
+		NateBuffer stagingBuffer{
+			nateDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory
-		);
+		};
 
-		void* data;
-		vkMapMemory(nateDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(nateDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)vertices.data());
 
-		nateDevice.createBuffer(
-			bufferSize,
+		vertexBuffer = std::make_unique<NateBuffer>(
+			nateDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			vertexBuffer,
-			vertexBufferMemory
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 		);
 
-		nateDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-		vkDestroyBuffer(nateDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(nateDevice.device(), stagingBufferMemory, nullptr);
+		nateDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
 	}
 
 	void NateModel::createIndexBuffers(const std::vector<uint32_t>& indices) {
@@ -102,34 +89,28 @@ namespace nate {
 		if (!hasIndexBuffer) return;
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
+		uint32_t indexSize = sizeof(indices[0]);
 
-		nateDevice.createBuffer(
-			bufferSize,
+		NateBuffer stagingBuffer{
+			nateDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory
-		);
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+		};
 
-		void* data;
-		vkMapMemory(nateDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(nateDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)indices.data());
 
-		nateDevice.createBuffer(
-			bufferSize,
+		indexBuffer = std::make_unique<NateBuffer>(
+			nateDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			indexBuffer,
-			indexBufferMemory
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 		);
 
-		nateDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-		vkDestroyBuffer(nateDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(nateDevice.device(), stagingBufferMemory, nullptr);
+		nateDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
 	}
 
 	std::vector<VkVertexInputBindingDescription> NateModel::Vertex::getBindingDescriptions() {

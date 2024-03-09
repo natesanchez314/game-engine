@@ -3,6 +3,7 @@
 #include "simple_render_system.hpp"
 #include "nate_camera.hpp"
 #include "keyboard_movement_controller.hpp"
+#include "nate_buffer.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -13,8 +14,14 @@
 #include <array>
 #include <cassert>
 #include <chrono>
+#include <numeric>
 
 namespace nate {
+
+    struct GlobalUbo {
+        glm::mat4 projectionView{ 1.0f };
+        glm::vec3 lightDirection = glm::vec3{ 1.0f, -3.0f, -1.0f };
+    };
 
 	FirstApp::FirstApp() {
 		loadGameObjects();
@@ -23,6 +30,21 @@ namespace nate {
 	FirstApp::~FirstApp() { }
 
 	void FirstApp::run() {
+        auto minOffsetAlignment = std::lcm(
+            nateDevice.properties.limits.minUniformBufferOffsetAlignment,
+            nateDevice.properties.limits.nonCoherentAtomSize
+        );
+
+        NateBuffer globalUboBuffer{
+            nateDevice,
+            sizeof(GlobalUbo),
+            NateSwapChain::MAX_FRAMES_IN_FLIGHT,
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            minOffsetAlignment
+        };
+        globalUboBuffer.map();
+
 		SimpleRenderSystem simpleRenderSystem{ nateDevice, nateRenderer.getSwapChainRenderPass() };
         NateCamera camera{};
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
@@ -46,8 +68,22 @@ namespace nate {
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.01f, 10.0f);
 
 			if (auto commandBuffer = nateRenderer.beginFrame()) {
+                int frameIndex = nateRenderer.getFrameIndex();
+                FrameInfo frameInfo{
+                    frameIndex,
+                    frameTime,
+                    commandBuffer,
+                    camera
+                };
+                // Update phase
+                GlobalUbo ubo{};
+                ubo.projectionView = camera.getProjection() * camera.getView();
+                globalUboBuffer.writeToIndex(&ubo, frameIndex);
+                globalUboBuffer.flushIndex(frameIndex);
+
+                // Render phase
 				nateRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				nateRenderer.endSwapChainRenderPass(commandBuffer);
 				nateRenderer.endFrame();
 			}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nate_device.hpp"
+#include "nate_buffer.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -40,13 +41,11 @@ namespace nate {
 	private:
 		NateDevice& nateDevice;
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<NateBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		bool hasIndexBuffer = false;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<NateBuffer> indexBuffer;
 		uint32_t indexCount;
 
 	public:
