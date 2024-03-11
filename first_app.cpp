@@ -23,6 +23,10 @@ namespace nate {
     };
 
 	FirstApp::FirstApp() {
+        globalPool = NateDescriptorPool::Builder(nateDevice)
+            .setMaxSets(NateSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, NateSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .build();
 		loadGameObjects();
 	}
 
@@ -42,7 +46,23 @@ namespace nate {
             uboBuffers[i]->map();
         }
 
-		SimpleRenderSystem simpleRenderSystem{ nateDevice, nateRenderer.getSwapChainRenderPass() };
+        auto globalSetLayout = NateDescriptorSetLayout::Builder(nateDevice)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .build();
+
+        std::vector<VkDescriptorSet> globalDescriptorSets(NateSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < globalDescriptorSets.size(); i++) {
+            auto bufferInfo = uboBuffers[i]->descriptorInfo();
+            NateDescriptorWriter(*globalSetLayout, *globalPool)
+                .writeBuffer(0, &bufferInfo)
+                .build(globalDescriptorSets[i]);
+        }
+
+		SimpleRenderSystem simpleRenderSystem{ 
+            nateDevice, 
+            nateRenderer.getSwapChainRenderPass(), 
+            globalSetLayout->getDescriptorSetLayout()
+        };
         NateCamera camera{};
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
@@ -70,7 +90,8 @@ namespace nate {
                     frameIndex,
                     frameTime,
                     commandBuffer,
-                    camera
+                    camera,
+                    globalDescriptorSets[frameIndex]
                 };
                 // Update phase
                 GlobalUbo ubo{};

@@ -68,6 +68,9 @@
     <ClCompile Include="nate_frame_info.hpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="nate_descriptors.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple_shader.frag">
@@ -112,6 +115,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="nate_utils.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="nate_descriptors.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

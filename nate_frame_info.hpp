@@ -10,5 +10,6 @@ namespace nate {
 		float frameTime;
 		VkCommandBuffer commandBuffer;
 		NateCamera& camera;
+		VkDescriptorSet globalDescriptorSet;
 	};
 }

@@ -18,7 +18,7 @@ namespace nate {
 		std::unique_ptr<NatePipeline> natePipeline;
 
 	public:
-		SimpleRenderSystem(NateDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(NateDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -28,7 +28,7 @@ namespace nate {
 		void renderGameObjects(FrameInfo& frameInfo, std::vector<NateGameObject>& gameObjects);
 
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 	};
 }

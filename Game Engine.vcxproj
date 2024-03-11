@@ -141,6 +141,7 @@
     <ClCompile Include="keyboard_movement_controller.hpp" />
     <ClCompile Include="nate_buffer.cpp" />
     <ClCompile Include="nate_camera.cpp" />
+    <ClCompile Include="nate_descriptors.cpp" />
     <ClCompile Include="nate_device.cpp" />
     <ClCompile Include="nate_frame_info.hpp" />
     <ClCompile Include="nate_game_object.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="nate_buffer.hpp" />
     <ClInclude Include="nate_camera.hpp" />
+    <ClInclude Include="nate_descriptors.hpp" />
     <ClInclude Include="nate_device.hpp" />
     <ClInclude Include="nate_game_object.hpp" />
     <ClInclude Include="nate_model.hpp" />

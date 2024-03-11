@@ -4,6 +4,7 @@
 #include "nate_device.hpp"
 #include "nate_game_object.hpp"
 #include "nate_renderer.hpp"
+#include "nate_descriptors.hpp"
 
 #include <memory>
 #include <vector>
@@ -19,6 +20,7 @@ namespace nate {
 		NateWindow nateWindow{ WIDTH, HEIGHT, "Vulkan is hard" };
 		NateDevice nateDevice{ nateWindow };
 		NateRenderer nateRenderer{ nateWindow, nateDevice };
+		std::unique_ptr<NateDescriptorPool> globalPool{};
 		std::vector<NateGameObject> gameObjects;
 
 	public:
