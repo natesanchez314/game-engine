@@ -14,65 +14,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_window.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="first_app.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="first_app.hpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_window.hpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_pipeline.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_device.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_swap_chain.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_model.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_renderer.hpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_renderer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="simple_render_system.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_camera.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard_movement_controller.hpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard_movement_controller.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_game_object.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_buffer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_frame_info.hpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="nate_descriptors.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="shaders\simple_shader.frag">
       <Filter>shaders</Filter>
     </None>
@@ -90,34 +31,93 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="nate_device.hpp">
+    <ClCompile Include="src\first_app.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\keyboard_movement_controller.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_buffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_descriptors.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_device.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_game_object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_model.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_pipeline.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_renderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_swap_chain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nate_window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simple_render_system.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\first_app.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_pipeline.hpp">
+    <ClInclude Include="src\keyboard_movement_controller.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_swap_chain.hpp">
+    <ClInclude Include="src\nate_buffer.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_game_object.hpp">
+    <ClInclude Include="src\nate_camera.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_model.hpp">
+    <ClInclude Include="src\nate_descriptors.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="simple_render_system.hpp">
+    <ClInclude Include="src\nate_device.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_camera.hpp">
+    <ClInclude Include="src\nate_frame_info.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_buffer.hpp">
+    <ClInclude Include="src\nate_game_object.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_utils.hpp">
+    <ClInclude Include="src\nate_model.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="nate_descriptors.hpp">
+    <ClInclude Include="src\nate_pipeline.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nate_renderer.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nate_swap_chain.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nate_utils.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nate_window.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\simple_render_system.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

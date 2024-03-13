@@ -11,6 +11,10 @@
 #include <cstring>
 #include <unordered_map>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace std {
 	template<>
 	struct hash<nate::NateModel::Vertex> {
@@ -33,6 +37,7 @@ namespace nate {
 
 	std::unique_ptr<NateModel> NateModel::createModelFromFile(NateDevice& device, const std::string& filepath) {
 		Builder builder{};
+		//builder.loadModel(ENGINE_DIR + filepath);
 		builder.loadModel(filepath);
 		return std::make_unique<NateModel>(device, builder);
 	}
