@@ -49,7 +49,7 @@ namespace nate {
         }
 
         auto globalSetLayout = NateDescriptorSetLayout::Builder(nateDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(NateSwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -94,7 +94,8 @@ namespace nate {
                     frameTime,
                     commandBuffer,
                     camera,
-                    globalDescriptorSets[frameIndex]
+                    globalDescriptorSets[frameIndex],
+                    gameObjects
                 };
                 // Update phase
                 GlobalUbo ubo{};
@@ -104,7 +105,7 @@ namespace nate {
 
                 // Render phase
 				nateRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
+                simpleRenderSystem.renderGameObjects(frameInfo);
 				nateRenderer.endSwapChainRenderPass(commandBuffer);
 				nateRenderer.endFrame();
 			}
@@ -124,20 +125,20 @@ namespace nate {
         gameObject0.transform.translation = { -0.5f, 0.5f, 0.0f };
         gameObject0.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject0));
+        gameObjects.emplace(gameObject0.getId(), std::move(gameObject0));
 
         auto gameObject1 = NateGameObject::createGameObject();
         gameObject1.model = nateModel1;
         gameObject1.transform.translation = { 0.5f, 0.5f, 0.0f };
         gameObject1.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(gameObject1));
+        gameObjects.emplace(gameObject1.getId(),std::move(gameObject1));
 
         auto floor = NateGameObject::createGameObject();
         floor.model = quad;
         floor.transform.translation = { 0.0f, 0.5f, 0.0f };
         floor.transform.scale = glm::vec3(3.0f);
 
-        gameObjects.push_back(std::move(floor));
+        gameObjects.emplace(floor.getId(), std::move(floor));
 	}
 }

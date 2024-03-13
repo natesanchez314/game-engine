@@ -21,7 +21,7 @@ namespace nate {
 		NateDevice nateDevice{ nateWindow };
 		NateRenderer nateRenderer{ nateWindow, nateDevice };
 		std::unique_ptr<NateDescriptorPool> globalPool{};
-		std::vector<NateGameObject> gameObjects;
+		NateGameObject::Map gameObjects;
 
 	public:
 		FirstApp();

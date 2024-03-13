@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 namespace nate {
 	struct TransformComponent {
@@ -19,6 +20,8 @@ namespace nate {
 	class NateGameObject {
 	public:
 		using id_t = unsigned int;
+		using Map = std::unordered_map<id_t, NateGameObject>;
+
 		std::shared_ptr<NateModel> model{};
 		glm::vec3 color{};
 		TransformComponent transform{};
