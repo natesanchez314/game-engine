@@ -136,6 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="compile_shaders.bat" />
+    <None Include="shaders\point_light.frag" />
+    <None Include="shaders\point_light.vert" />
     <None Include="shaders\simple_shader.frag" />
     <None Include="shaders\simple_shader.frag.spv" />
     <None Include="shaders\simple_shader.vert" />
@@ -155,6 +157,7 @@
     <ClCompile Include="src\nate_renderer.cpp" />
     <ClCompile Include="src\nate_swap_chain.cpp" />
     <ClCompile Include="src\nate_window.cpp" />
+    <ClCompile Include="src\point_light_system.cpp" />
     <ClCompile Include="src\simple_render_system.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +175,7 @@
     <ClInclude Include="src\nate_swap_chain.hpp" />
     <ClInclude Include="src\nate_utils.hpp" />
     <ClInclude Include="src\nate_window.hpp" />
+    <ClInclude Include="src\point_light_system.hpp" />
     <ClInclude Include="src\simple_render_system.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

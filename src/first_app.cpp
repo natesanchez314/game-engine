@@ -1,6 +1,7 @@
 #include "first_app.hpp"
 
 #include "simple_render_system.hpp"
+#include "point_light_system.hpp"
 #include "nate_camera.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "nate_buffer.hpp"
@@ -18,7 +19,8 @@
 namespace nate {
 
     struct GlobalUbo {
-        glm::mat4 projectionView{ 1.0f };
+        glm::mat4 projection{ 1.0f };
+        glm::mat4 view{ 1.0f };
         glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
         glm::vec3 lightPos{ -1.0f };
         alignas(16) glm::vec4 lightColor{ 1.0f };
@@ -65,6 +67,11 @@ namespace nate {
             nateRenderer.getSwapChainRenderPass(), 
             globalSetLayout->getDescriptorSetLayout()
         };
+        PointLightSystem pointLightSystem{
+            nateDevice,
+            nateRenderer.getSwapChainRenderPass(),
+            globalSetLayout->getDescriptorSetLayout()
+        };
         NateCamera camera{};
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
@@ -99,13 +106,15 @@ namespace nate {
                 };
                 // Update phase
                 GlobalUbo ubo{};
-                ubo.projectionView = camera.getProjection() * camera.getView();
+                ubo.projection = camera.getProjection();
+                ubo.view = camera.getView();
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
                 // Render phase
 				nateRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(frameInfo);
+                pointLightSystem.render(frameInfo);
 				nateRenderer.endSwapChainRenderPass(commandBuffer);
 				nateRenderer.endFrame();
 			}

@@ -12,6 +12,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="src\systems">
+      <UniqueIdentifier>{73a05ce7-e9f9-4fee-bd46-d15730ba63d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple_shader.frag">
@@ -27,6 +30,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="compile_shaders.bat">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\point_light.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\point_light.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -70,8 +79,11 @@
     <ClCompile Include="src\nate_window.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\point_light_system.cpp">
+      <Filter>src\systems</Filter>
+    </ClCompile>
     <ClCompile Include="src\simple_render_system.cpp">
-      <Filter>src</Filter>
+      <Filter>src\systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -117,8 +129,11 @@
     <ClInclude Include="src\nate_window.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\point_light_system.hpp">
+      <Filter>src\systems</Filter>
+    </ClInclude>
     <ClInclude Include="src\simple_render_system.hpp">
-      <Filter>src</Filter>
+      <Filter>src\systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
