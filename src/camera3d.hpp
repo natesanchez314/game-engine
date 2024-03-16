@@ -6,10 +6,11 @@
 
 namespace nate {
 
-	class NateCamera {
+	class Camera3d {
 	private:
-		glm::mat4 projectionMatrix{ 1.0f };
-		glm::mat4 viewMatrix{ 1.0f };
+		glm::mat4 projMat{ 1.0f };
+		glm::mat4 viewMat{ 1.0f };
+		glm::mat4 invViewMat{ 1.0f };
 
 	public:
 		void setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{ 0.0f, -1.0f, 0.0f });
@@ -18,7 +19,8 @@ namespace nate {
 
 		void setOrthographicProjection(float left, float right, float top, float bottom, float near, float far);
 		void setPerspectiveProjection(float fovy, float aspect, float near, float far);
-		const glm::mat4 getProjection() const { return projectionMatrix; }
-		const glm::mat4 getView() const { return viewMatrix; }
+		const glm::mat4 getProjection() const { return projMat; }
+		const glm::mat4 getView() const { return viewMat; }
+		const glm::mat4 getInvView() const { return invViewMat; }
 	};
 }

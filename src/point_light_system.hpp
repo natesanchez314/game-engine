@@ -3,7 +3,7 @@
 #include "nate_pipeline.hpp"
 #include "nate_device.hpp"
 #include "nate_game_object.hpp"
-#include "nate_camera.hpp"
+#include "camera3d.hpp"
 #include "nate_frame_info.hpp"
 
 #include <memory>

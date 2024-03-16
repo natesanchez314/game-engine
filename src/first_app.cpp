@@ -2,7 +2,7 @@
 
 #include "simple_render_system.hpp"
 #include "point_light_system.hpp"
-#include "nate_camera.hpp"
+#include "camera3d.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "nate_buffer.hpp"
 
@@ -64,7 +64,7 @@ namespace nate {
             nateRenderer.getSwapChainRenderPass(),
             globalSetLayout->getDescriptorSetLayout()
         };
-        NateCamera camera{};
+        Camera3d camera{};
         camera.setViewTarget(glm::vec3(-1.0f, -2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 2.5f));
 
         auto viewerObject = NateGameObject::createGameObject();
@@ -98,8 +98,9 @@ namespace nate {
                 };
                 // Update phase
                 GlobalUbo ubo{};
-                ubo.projection = camera.getProjection();
+                ubo.proj = camera.getProjection();
                 ubo.view = camera.getView();
+                ubo.invView = camera.getInvView();
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();

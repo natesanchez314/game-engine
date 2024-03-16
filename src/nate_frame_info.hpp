@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nate_camera.hpp"
+#include "camera3d.hpp"
 #include "nate_game_object.hpp"
 
 #include <vulkan/vulkan.h>
@@ -15,8 +15,9 @@ struct PointLight {
 namespace nate {
 
 	struct GlobalUbo {
-		glm::mat4 projection{ 1.0f };
+		glm::mat4 proj{ 1.0f };
 		glm::mat4 view{ 1.0f };
+		glm::mat4 invView{ 1.0f };
 		glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
 		PointLight pointLights[MAX_LIGHTS];
 		int numLights;
@@ -26,7 +27,7 @@ namespace nate {
 		int frameIndex;
 		float frameTime;
 		VkCommandBuffer commandBuffer;
-		NateCamera& camera;
+		Camera3d& camera;
 		VkDescriptorSet globalDescriptorSet;
 		NateGameObject::Map& gameObjects;
 	};

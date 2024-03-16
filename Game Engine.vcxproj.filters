@@ -52,7 +52,7 @@
     <ClCompile Include="src\nate_buffer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\nate_camera.cpp">
+    <ClCompile Include="src\camera3d.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\nate_descriptors.cpp">
@@ -96,7 +96,7 @@
     <ClInclude Include="src\nate_buffer.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\nate_camera.hpp">
+    <ClInclude Include="src\camera3d.hpp">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\nate_descriptors.hpp">
