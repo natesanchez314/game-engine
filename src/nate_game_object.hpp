@@ -17,14 +17,20 @@ namespace nate {
 		glm::mat3 normalMatrix();
 	};
 
+	struct PointLightComponent {
+		float lightIntensity = 1.0f;
+	};
+
 	class NateGameObject {
 	public:
 		using id_t = unsigned int;
 		using Map = std::unordered_map<id_t, NateGameObject>;
 
-		std::shared_ptr<NateModel> model{};
 		glm::vec3 color{};
 		TransformComponent transform{};
+
+		std::shared_ptr<NateModel> model{};
+		std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
 	private:
 		id_t id;
@@ -34,6 +40,8 @@ namespace nate {
 			static id_t currentId = 0;
 			return NateGameObject(currentId++);
 		}
+
+		static NateGameObject makePointLight(float intensity = 10.0f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.0f));
 
 		id_t getId() { return id; }
 
