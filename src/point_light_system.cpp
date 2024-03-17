@@ -93,7 +93,7 @@ namespace nate {
 
 	void PointLightSystem::render(FrameInfo& frameInfo) {
 		// sort point lights
-		std::map<float, NateGameObject::id_t> sorted;
+		std::map<float, GameObject::id_t> sorted;
 		for (auto& kv : frameInfo.gameObjects) {
 			auto& obj = kv.second;
 			if (obj.pointLight == nullptr) continue;

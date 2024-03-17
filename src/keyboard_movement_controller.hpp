@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nate_game_object.hpp"
+#include "game_object.hpp"
 #include "nate_window.hpp"
 
 namespace nate {
@@ -24,6 +24,6 @@ namespace nate {
         float moveSpeed{ 3.0f };
         float lookSpeed{ 1.5f };
 
-        void moveInPlaneXZ(GLFWwindow* window, float delta, NateGameObject& gameObject);
+        void moveInPlaneXZ(GLFWwindow* window, float delta, GameObject& gameObject);
 	};
 }

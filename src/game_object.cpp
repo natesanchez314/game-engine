@@ -1,6 +1,7 @@
-#include "nate_game_object.hpp"
+#include "game_object.hpp"
 
 namespace nate {
+
 	glm::mat4 TransformComponent::mat4() {
 		const float c3 = glm::cos(rotation.z);
 		const float s3 = glm::sin(rotation.z);
@@ -60,8 +61,8 @@ namespace nate {
 		};
 	}
 
-	NateGameObject NateGameObject::makePointLight(float intensity, float radius, glm::vec3 color) {
-		NateGameObject gameObj = NateGameObject::createGameObject();
+	GameObject GameObject::makePointLight(float intensity, float radius, glm::vec3 color) {
+		GameObject gameObj = GameObject::createGameObject();
 		gameObj.color = color;
 		gameObj.transform.scale.x = radius;
 		gameObj.pointLight = std::make_unique<PointLightComponent>();

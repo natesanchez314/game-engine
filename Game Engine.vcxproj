@@ -151,8 +151,8 @@
     <ClCompile Include="src\camera3d.cpp" />
     <ClCompile Include="src\nate_descriptors.cpp" />
     <ClCompile Include="src\nate_device.cpp" />
-    <ClCompile Include="src\nate_game_object.cpp" />
-    <ClCompile Include="src\nate_model.cpp" />
+    <ClCompile Include="src\game_object.cpp" />
+    <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\nate_pipeline.cpp" />
     <ClCompile Include="src\nate_renderer.cpp" />
     <ClCompile Include="src\nate_swap_chain.cpp" />
@@ -167,9 +167,9 @@
     <ClInclude Include="src\camera3d.hpp" />
     <ClInclude Include="src\nate_descriptors.hpp" />
     <ClInclude Include="src\nate_device.hpp" />
-    <ClInclude Include="src\nate_frame_info.hpp" />
-    <ClInclude Include="src\nate_game_object.hpp" />
-    <ClInclude Include="src\nate_model.hpp" />
+    <ClInclude Include="src\frame_info.hpp" />
+    <ClInclude Include="src\game_object.hpp" />
+    <ClInclude Include="src\model.hpp" />
     <ClInclude Include="src\nate_pipeline.hpp" />
     <ClInclude Include="src\nate_renderer.hpp" />
     <ClInclude Include="src\nate_swap_chain.hpp" />

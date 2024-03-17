@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nate_model.hpp"
+#include "model.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 namespace nate {
+
 	struct TransformComponent {
 		glm::vec3 translation{};
 		glm::vec3 scale{ 1.0f, 1.0f, 1.0f };
@@ -21,36 +22,36 @@ namespace nate {
 		float lightIntensity = 1.0f;
 	};
 
-	class NateGameObject {
+	class GameObject {
 	public:
 		using id_t = unsigned int;
-		using Map = std::unordered_map<id_t, NateGameObject>;
+		using Map = std::unordered_map<id_t, GameObject>;
 
 		glm::vec3 color{};
 		TransformComponent transform{};
 
-		std::shared_ptr<NateModel> model{};
+		std::shared_ptr<Model> model{};
 		std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
 	private:
 		id_t id;
 
 	public:
-		static NateGameObject createGameObject() {
+		static GameObject createGameObject() {
 			static id_t currentId = 0;
-			return NateGameObject(currentId++);
+			return GameObject(currentId++);
 		}
 
-		static NateGameObject makePointLight(float intensity = 10.0f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.0f));
+		static GameObject makePointLight(float intensity = 10.0f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.0f));
 
 		id_t getId() { return id; }
 
-		NateGameObject(const NateGameObject&) = delete;
-		NateGameObject& operator=(const NateGameObject&) = delete;
-		NateGameObject(NateGameObject&&) = default;
-		NateGameObject& operator=(NateGameObject&&) = default;
+		GameObject(const GameObject&) = delete;
+		GameObject& operator=(const GameObject&) = delete;
+		GameObject(GameObject&&) = default;
+		GameObject& operator=(GameObject&&) = default;
 
 	private:
-		NateGameObject(id_t objId) : id(objId) { }
+		GameObject(id_t objId) : id(objId) { }
 	};
 }

@@ -12,7 +12,7 @@
 
 namespace nate {
 
-	class NateModel {
+	class Model {
 	public: 
 		struct Vertex {
 			glm::vec3 position{};
@@ -49,13 +49,13 @@ namespace nate {
 		uint32_t indexCount;
 
 	public:
-		NateModel(NateDevice& device, const NateModel::Builder& builder);
-		~NateModel();
+		Model(NateDevice& device, const Model::Builder& builder);
+		~Model();
 
-		NateModel(const NateModel&) = delete;
-		NateModel& operator=(const NateModel&) = delete;
+		Model(const Model&) = delete;
+		Model& operator=(const Model&) = delete;
 
-		static std::unique_ptr<NateModel> createModelFromFile(NateDevice& device, const std::string& filepath);
+		static std::unique_ptr<Model> createModelFromFile(NateDevice& device, const std::string& filepath);
 
 		void bind(VkCommandBuffer commandBuffer);
 		void draw(VkCommandBuffer commandBuffer);

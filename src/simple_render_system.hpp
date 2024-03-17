@@ -2,9 +2,9 @@
 
 #include "nate_pipeline.hpp"
 #include "nate_device.hpp"
-#include "nate_game_object.hpp"
+#include "game_object.hpp"
 #include "camera3d.hpp"
-#include "nate_frame_info.hpp"
+#include "frame_info.hpp"
 
 #include <memory>
 #include <vector>

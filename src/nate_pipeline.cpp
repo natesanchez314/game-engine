@@ -1,6 +1,6 @@
 #include "nate_pipeline.hpp"
 
-#include "nate_model.hpp"
+#include "model.hpp"
 
 #include <fstream>
 #include <stdexcept>
@@ -203,8 +203,8 @@ namespace nate {
 		configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
 		configInfo.dynamicStateInfo.flags = 0;
 
-		configInfo.bindingDescriptions = NateModel::Vertex::getBindingDescriptions();
-		configInfo.attributeDescriptions = NateModel::Vertex::getAttributeDescriptions();
+		configInfo.bindingDescriptions = Model::Vertex::getBindingDescriptions();
+		configInfo.attributeDescriptions = Model::Vertex::getAttributeDescriptions();
 	}
 
 	void NatePipeline::enableAlphaBlending(PipelineConfigInfo& configInfo) {

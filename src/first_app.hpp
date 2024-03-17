@@ -2,7 +2,7 @@
 
 #include "nate_window.hpp"
 #include "nate_device.hpp"
-#include "nate_game_object.hpp"
+#include "game_object.hpp"
 #include "nate_renderer.hpp"
 #include "nate_descriptors.hpp"
 
@@ -21,7 +21,7 @@ namespace nate {
 		NateDevice nateDevice{ nateWindow };
 		NateRenderer nateRenderer{ nateWindow, nateDevice };
 		std::unique_ptr<NateDescriptorPool> globalPool{};
-		NateGameObject::Map gameObjects;
+		GameObject::Map gameObjects;
 
 	public:
 		FirstApp();

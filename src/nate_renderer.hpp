@@ -3,7 +3,7 @@
 #include "nate_window.hpp"
 #include "nate_device.hpp"
 #include "nate_swap_chain.hpp"
-#include "nate_model.hpp"
+#include "model.hpp"
 
 #include <memory>
 #include <vector>

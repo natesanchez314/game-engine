@@ -1,7 +1,7 @@
 #pragma once
 
 #include "camera3d.hpp"
-#include "nate_game_object.hpp"
+#include "game_object.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -29,6 +29,6 @@ namespace nate {
 		VkCommandBuffer commandBuffer;
 		Camera3d& camera;
 		VkDescriptorSet globalDescriptorSet;
-		NateGameObject::Map& gameObjects;
+		GameObject::Map& gameObjects;
 	};
 }

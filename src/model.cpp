@@ -1,4 +1,4 @@
-#include "nate_model.hpp"
+#include "model.hpp"
 
 #include "nate_utils.hpp"
 
@@ -18,8 +18,8 @@
 namespace std {
 
 	template<>
-	struct hash<nate::NateModel::Vertex> {
-		size_t operator()(nate::NateModel::Vertex const& vertex) const {
+	struct hash<nate::Model::Vertex> {
+		size_t operator()(nate::Model::Vertex const& vertex) const {
 			size_t seed = 0;
 			nate::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
 			return seed;
@@ -29,21 +29,21 @@ namespace std {
 
 namespace nate {
 
-	NateModel::NateModel(NateDevice& device, const NateModel::Builder& builder) : nateDevice{ device } {
+	Model::Model(NateDevice& device, const Model::Builder& builder) : nateDevice{ device } {
 		createVertexBuffers(builder.vertices);
 		createIndexBuffers(builder.indices);
 	}
 
-	NateModel::~NateModel() {}
+	Model::~Model() {}
 
-	std::unique_ptr<NateModel> NateModel::createModelFromFile(NateDevice& device, const std::string& filepath) {
+	std::unique_ptr<Model> Model::createModelFromFile(NateDevice& device, const std::string& filepath) {
 		Builder builder{};
 		//builder.loadModel(ENGINE_DIR + filepath);
 		builder.loadModel(filepath);
-		return std::make_unique<NateModel>(device, builder);
+		return std::make_unique<Model>(device, builder);
 	}
 
-	void NateModel::bind(VkCommandBuffer commandBuffer) {
+	void Model::bind(VkCommandBuffer commandBuffer) {
 		VkBuffer buffers[] = { vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
@@ -53,7 +53,7 @@ namespace nate {
 		}
 	}
 
-	void NateModel::draw(VkCommandBuffer commandBuffer) {
+	void Model::draw(VkCommandBuffer commandBuffer) {
 		if (hasIndexBuffer) {
 			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 		} else {
@@ -61,7 +61,7 @@ namespace nate {
 		}
 	}
 
-	void NateModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
+	void Model::createVertexBuffers(const std::vector<Vertex>& vertices) {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
@@ -89,7 +89,7 @@ namespace nate {
 		nateDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
 	}
 
-	void NateModel::createIndexBuffers(const std::vector<uint32_t>& indices) {
+	void Model::createIndexBuffers(const std::vector<uint32_t>& indices) {
 		indexCount = static_cast<uint32_t>(indices.size());
 		hasIndexBuffer = indexCount > 0;
 		if (!hasIndexBuffer) return;
@@ -119,7 +119,7 @@ namespace nate {
 		nateDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
 	}
 
-	std::vector<VkVertexInputBindingDescription> NateModel::Vertex::getBindingDescriptions() {
+	std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
 		bindingDescriptions[0].binding = 0;
 		bindingDescriptions[0].stride = sizeof(Vertex);
@@ -127,7 +127,7 @@ namespace nate {
 		return bindingDescriptions;
 	}
 
-	std::vector<VkVertexInputAttributeDescription> NateModel::Vertex::getAttributeDescriptions() {
+	std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions() {
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
 		attributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) });
@@ -138,7 +138,7 @@ namespace nate {
 		return attributeDescriptions;
 	}
 
-	void NateModel::Builder::loadModel(const std::string& filepath) {
+	void Model::Builder::loadModel(const std::string& filepath) {
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;

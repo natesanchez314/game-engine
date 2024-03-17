@@ -61,10 +61,10 @@
     <ClCompile Include="src\nate_device.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\nate_game_object.cpp">
+    <ClCompile Include="src\game_object.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\nate_model.cpp">
+    <ClCompile Include="src\model.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\nate_pipeline.cpp">
@@ -105,13 +105,13 @@
     <ClInclude Include="src\nate_device.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\nate_frame_info.hpp">
+    <ClInclude Include="src\frame_info.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\nate_game_object.hpp">
+    <ClInclude Include="src\game_object.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\nate_model.hpp">
+    <ClInclude Include="src\model.hpp">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\nate_pipeline.hpp">
