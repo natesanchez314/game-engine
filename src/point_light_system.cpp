@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <array>
 #include <cassert>
+#include <map>
 
 namespace nate {
 
@@ -17,8 +18,11 @@ namespace nate {
 		float radius;
 	};
 
-	PointLightSystem::PointLightSystem(NateDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-		: nateDevice(device) {
+	PointLightSystem::PointLightSystem(
+		NateDevice& device, 
+		VkRenderPass renderPass, 
+		VkDescriptorSetLayout globalSetLayout
+	) : nateDevice(device) {
 		createPipelineLayout(globalSetLayout);
 		createPipeline(renderPass);
 	}
@@ -51,6 +55,7 @@ namespace nate {
 
 		PipelineConfigInfo pipelineConfig{};
 		NatePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		NatePipeline::enableAlphaBlending(pipelineConfig);
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();
 		pipelineConfig.renderPass = renderPass;
@@ -87,6 +92,17 @@ namespace nate {
 	}
 
 	void PointLightSystem::render(FrameInfo& frameInfo) {
+		// sort point lights
+		std::map<float, NateGameObject::id_t> sorted;
+		for (auto& kv : frameInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) continue;
+
+			auto offset = frameInfo.camera.getPos() - obj.transform.translation;
+			float disSqr = glm::dot(offset, offset);
+			sorted[disSqr] = obj.getId();
+		}
+
 		natePipeline->bind(frameInfo.commandBuffer);
 
 		vkCmdBindDescriptorSets(
@@ -100,9 +116,9 @@ namespace nate {
 			nullptr
 		);
 
-		for (auto& kv : frameInfo.gameObjects) {
-			auto& obj = kv.second;
-			if (obj.pointLight == nullptr) continue;
+		for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+
+			auto& obj = frameInfo.gameObjects.at(it->second);
 
 			PointLightPushConstants push{};
 			push.position = glm::vec4(obj.transform.translation, 1.0f);

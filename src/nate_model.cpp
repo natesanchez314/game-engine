@@ -16,6 +16,7 @@
 #endif
 
 namespace std {
+
 	template<>
 	struct hash<nate::NateModel::Vertex> {
 		size_t operator()(nate::NateModel::Vertex const& vertex) const {

@@ -84,7 +84,7 @@ namespace nate {
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = nateRenderer.getAspectRatio();
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.01f, 100.0f);
+            camera.setPersProj(glm::radians(50.0f), aspect, 0.01f, 100.0f);
 
 			if (auto commandBuffer = nateRenderer.beginFrame()) {
                 int frameIndex = nateRenderer.getFrameIndex();
@@ -98,7 +98,7 @@ namespace nate {
                 };
                 // Update phase
                 GlobalUbo ubo{};
-                ubo.proj = camera.getProjection();
+                ubo.proj = camera.getProj();
                 ubo.view = camera.getView();
                 ubo.invView = camera.getInvView();
                 pointLightSystem.update(frameInfo, ubo);
