@@ -1,0 +1,22 @@
+﻿  app.cpp
+  camera3d.cpp
+  first_app.cpp
+  game_object.cpp
+  keyboard_movement_controller.cpp
+  main.cpp
+  model.cpp
+  GLM_GTX_hash requires C++11 standard library support
+  nate_buffer.cpp
+  nate_descriptors.cpp
+C:\Users\nates\Documents\GitHub\game-engine\Engine\nate_descriptors.cpp(193,69): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+  nate_device.cpp
+  nate_pipeline.cpp
+  nate_renderer.cpp
+C:\Users\nates\Documents\GitHub\game-engine\Engine\nate_renderer.cpp(55,42): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+  nate_swap_chain.cpp
+  nate_window.cpp
+  point_light_system.cpp
+  simple_render_system.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Game Engine.vcxproj -> C:\Users\nates\Documents\GitHub\game-engine\Engine\x64\Debug\Game Engine.exe
